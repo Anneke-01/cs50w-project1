@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="text-left">
+    <div class="card border-primary">
+        <div class="card-body">
+                <h5 class="card-title">Write a review</h5>
+                <form action="/review" method="post">
+                    <div class="form-group">
+                        <input autocomplete="off" autofocus class="form-control review-box" name="review" placeholder="Write your review :)" type="text"/>
+                    </div>
+                    <div class="form-group" style="width=20px;">
+                        <span>Rating</span>
+                        <input autocomplete="off" autofocus class="form-control" name="rating" placeholder="1" type="number" min="1" max="5" />                                                
+                    </div>
+                    <button class="btn btn-primary" type="submit">Submit</button>
+                    
+
+                </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

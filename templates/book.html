@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ book.title }}
+{% endblock %}
+
+{% block main %}
+    <div class="text-left">
+        <h1 class="d-block">{{ book.title }}</h1>
+        <h5 class="mb-2 text-muted d-block">by {{ book.author }}</h5>    
+        <div>
+            <h5 class="mb-2 myBlue d-inline-block">ISBN </h5> {{ book.isbn }}
+            <h5 class="mb-2 myBlue d-inline-block">Published in </h5> {{ book.year }}
+        </div>
+        <hr>
+        {% for review in reviews %}
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title d-inline-block">{{ review.username }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted d-inline-block">  rated it {{ review.rating }}</h6>
+                <p class="card-text">{{ review.review }}</p>
+            </div>
+        </div>
+        {% endfor %}
+        <p><a href="/review" style="color: #65f56d;">Write a review</a><p>
+       
+    </div>
+{% endblock %}
