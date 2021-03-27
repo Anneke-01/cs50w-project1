@@ -1,0 +1,8 @@
+HOST: ec2-52-21-252-142.compute-1.amazonaws.com
+Database: de3rkda5n77q09
+User:mmxeeldbpfzwvt
+Port: 5432
+Password: a15ebc20a5254e9f38a30277355ee5410f21c39ddf95d8e9f1267a20b593f51e
+$env:DATABASE_URL='postgres://mmxeeldbpfzwvt:a15ebc20a5254e9f38a30277355ee5410f21c39ddf95d8e9f1267a20b593f51e@ec2-52-21-252-142.compute-1.amazonaws.com:5432/de3rkda5n77q09'
+$env:FLASK_DEBUG='1'
+$env:API_KEY=''
