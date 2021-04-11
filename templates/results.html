@@ -7,6 +7,7 @@
 {% block main %}
     <div class="form-group text-left">
       <h2 class="text-left">Results for: {{ search }}</h2>
+      
     </div>
     <table class="table table-bordered">
       <thead class="table-dark">
@@ -19,6 +20,7 @@
       </thead>
       <tbody>
             {% for book in books %}
+              
                 <tr>
                   <td><a href="/book/{{ book.isbn }}">{{ book.isbn }}</a></td>
                   <td><a href="/book/{{ book.isbn }}">{{ book.title }}</a></td>

@@ -1,28 +1,49 @@
-{% extends "layout.html" %}
+{% extends "layout.html" %} 
 
-{% block title %}
-    {{ book.title }}
-{% endblock %}
 
-{% block main %}
-    <div class="text-left">
-        <h1 class="d-block">{{ book.title }}</h1>
-        <h5 class="mb-2 text-muted d-block">by {{ book.author }}</h5>    
-        <div>
-            <h5 class="mb-2 myBlue d-inline-block">ISBN </h5> {{ book.isbn }}
-            <h5 class="mb-2 myBlue d-inline-block">Published in </h5> {{ book.year }}
-        </div>
-        <hr>
-        {% for review in reviews %}
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title d-inline-block">{{ review.username }}</h5>
-                <h6 class="card-subtitle mb-2 text-muted d-inline-block">  rated it {{ review.rating }}</h6>
-                <p class="card-text">{{ review.review }}</p>
+{%block main %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <input name="isbn" href="/book/{{ book.isbn }}" style="display:none;"/>
+            <h1 class="d-block" style="color: orange;">{{ book.title }}</h1>
+            <h5 class="mb-2 text-muted d-block">by {{ book.author }}</h5>
+            <div>
+                <h5 class="mb-2 myBlue d-inline-block">ISBN</h5>
+                {{ book.isbn }}
+                <h5 class="mb-2 myBlue d-inline-block">Published in</h5> {{ book.year }}
             </div>
+            <hr>
+            <h5 class="mb-2 myBlue d-inline-block">Reviews</h5>
         </div>
-        {% endfor %}
-        <p><a href="/review" style="color: #65f56d;">Write a review</a><p>
-       
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <form action="/review" method="post">
+                <div class="card-border rounded" style="background: rgba(255, 127, 39, 0.3)">
+                    <div class="card-body">
+                        <h5 class="card-title">Write a review</h5>
+
+                        <div class="form-group">
+                            <textarea class="form-control" id="review" rows="3"></textarea>
+                        </div>
+                        <div class="form-group" style="width=20px;">
+                            <span>Rating</span>
+                            <input type="radio" name="rating" id="radio1" />
+                            <label for="radio1">1</label>
+                            <input type="radio" name="rating" id="radio2" />
+                            <label for="radio2">2</label>
+                            <input type="radio" name="rating" id="radio3" />
+                            <label for="radio3">3</label>
+                            <input type="radio" name="rating" id="radio4" />
+                            <label for="radio4">4</label>
+                            <input type="radio" name="rating" id="radio5" />
+                            <label for="radio5">5</label>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
+
 {% endblock %}

@@ -24,4 +24,14 @@ CREATE TABLE review(
 );
 select id_book  from books where isbn='1442468351'
 SELECT * FROM reviews WHERE isbn=:isbn AND user_id=:user_id
-INSERT INTO review(id_book, user_id, rating, post) VALUES(69, 8, 4, 'Good book!')
+INSERT INTO review(isbn, user_id, rating, post) VALUES(1234, 8, 4, 'Good book!')
+
+CREATE TABLE rev(
+    book_id INTEGER REFERENCES books,
+    user_id INTEGER REFERENCES users,
+    revi varchar not null
+);
+
+INSERT INTO rev VALUES (69,1,'prueba')
+
+SELECT id_book FROM books where isbn='1442468351'
