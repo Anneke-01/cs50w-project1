@@ -74,23 +74,20 @@ def book(isbn):
 @login_required
 def review():
     isbn = request.form.get("isbn")
-    username = request.form.get("username")
+    username = session["username"]
     review = request.form.get("review")
-    book = db.execute("SELECT * FROM books WHERE isbn=:isbn",
-                      {"isbn": isbn}).fetchone()
-    respuesta = db.execute("SELECT id FROM users WHERE username = :username", {
-        "username": username}).fetchone()
-    prueba = db.execute("SELECT id FROM users WHERE username = :username",
-                        {"username": username}).fetchall()
-    print(prueba)
-    isbnres = db.execute("SELECT id_book FROM books where isbn=:isbn", {
-                         "isbn": isbn}).fetchone()
-    print(isbnres)
-
-    db.execute("INSERT INTO rev(book_id,user_id,revi) VALUES(:book_id,user_id,revi)",
-               {"isbn": isbnres, "user_id": respuesta, "revi": review})
+    rating = request.form.get("rating")
+    user_id = db.execute("SELECT id FROM users WHERE username = :username", {
+        "username": username}).fetchone()[0]
+    print(user_id)
+    book_id = db.execute("SELECT id_book FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()[0]
+    print(book_id)
+    db.execute("INSERT INTO reviews (user_id,book_id,review, rating) VALUES (:user_id,:book_id,:review,:rating)",
+                {"user_id":user_id, "book_id":book_id, "review":review, "rating":rating})
     db.commit()
-    return render_template("review.html")
+
+    book = "/book/" + isbn
+    return redirect(book)
 
 
 @app.route("/register", methods=["GET", "POST"])
@@ -119,8 +116,8 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    session.clear()
-    if request.method == "POST":
+    session.clear() 
+    if request.method == "POST": 
         username = request.form.get("username")
         print(username)
         rows = db.execute("SELECT * FROM users WHERE username = :username",
@@ -130,6 +127,7 @@ def login():
         if len(rows) != 1 or not check_password_hash(rows[0]["password"], request.form.get("password")):
             return render_template("error.html", message="invalid username and/or password")
         session["user_id"] = rows[0]["id"]
+        session["username"] = username
         return redirect(url_for("index"))
     else:
         return render_template("login.html")
