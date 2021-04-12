@@ -16,10 +16,10 @@
             <hr>
             <h5 class="mb-2 myBlue d-inline-block">Reviews</h5>
             {% for review in reviews %}
-            <p class="text-white">{{ review.username }}</p>
-            <p class="text-white"><small>review</small></p>
-            <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;">{{ review.review }}</pre> </div>
-            <br>
+                <p class="text-white">{{ review.username }}</p>
+                <p class="text-white"><small>review</small></p>
+                <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;"></pre>{{ review.review }} </div>
+                <br>
             {% endfor %}
             <hr>
         </div>

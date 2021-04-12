@@ -26,23 +26,10 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-@app.route("/", methods=["GET", "POST"])
-@login_required
-def index():
-    if request.method == "POST":
-        if not request.form.get("book"):
-            return render_template("error.html", message="You must submit book info.")
-        search = "%" + request.form.get("book") + "%"
-        search = search.title()
-        books = db.execute(
-            "SELECT isbn, title, author, year FROM books where isbn LIKE :search OR title LIKE :search OR author LIKE :search OR year LIKE :search")
-        if len(books) == 0:
-            return render_template("error.html", message="No matching results.")
-        else:
-            return render_template("results.html", books=books)
-    else:
-        return render_template("index.html")
-
+#@app.route("/", methods=["GET", "POST"])
+#@login_required
+#def index():
+#    return redirect(url_for("search"))
 
 @app.route("/search", methods=["GET", "POST"])
 @login_required
@@ -55,7 +42,9 @@ def search():
         books = db.execute(
             "SELECT * FROM books WHERE (LOWER(isbn) LIKE :book) OR (LOWER(title) LIKE :book) OR (LOWER(author) LIKE :book) LIMIT 15", {"book": book}).fetchall()
         if len(books) == 0:
-            return render_template("error.html", message="No results :(")
+            flash("No result")
+            return redirect(url_for("search"))
+            #return render_template("error.html", message="No results :(")
         else:
             return render_template("results.html", search=search, books=books)
     else:
@@ -82,10 +71,14 @@ def review():
     print(user_id)
     book_id = db.execute("SELECT id_book FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()[0]
     print(book_id)
+    obtener_rev = db.execute("SELECT * FROM reviews WHERE user_id=:user_id AND book_id=:book_id",{
+        "user_id":user_id, "book_id":book_id})
+    if obtener_rev.rowcount > 0:
+        return render_template("error.html", message="No")
+    
     db.execute("INSERT INTO reviews (user_id,book_id,review, rating) VALUES (:user_id,:book_id,:review,:rating)",
                 {"user_id":user_id, "book_id":book_id, "review":review, "rating":rating})
     db.commit()
-
     book = "/book/" + isbn
     return redirect(book)
 
@@ -109,7 +102,7 @@ def register():
         # crasheaaaaaaaaaaaaaaaaaaaaaaaaaa
         session["user_id"] = respuesta
         flash("Registered!")
-        return redirect(url_for("index"))
+        return redirect(url_for("search"))
     else:
         return render_template("register.html")
 
@@ -128,14 +121,14 @@ def login():
             return render_template("error.html", message="invalid username and/or password")
         session["user_id"] = rows[0]["id"]
         session["username"] = username
-        return redirect(url_for("index"))
+        return redirect(url_for("search"))
     else:
         return render_template("login.html")
 
 @app.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 
 @app.route("/api/<isbn>")
