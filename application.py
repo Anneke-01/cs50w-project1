@@ -26,10 +26,10 @@ engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
 
-#@app.route("/", methods=["GET", "POST"])
-#@login_required
-#def index():
-#    return redirect(url_for("search"))
+@app.route("/", methods=["GET", "POST"])
+@login_required
+def index():
+    return redirect(url_for("search"))
 
 @app.route("/search", methods=["GET", "POST"])
 @login_required
@@ -56,7 +56,9 @@ def search():
 def book(isbn):
     book = db.execute("SELECT * FROM books WHERE isbn=:isbn",
                       {"isbn": isbn}).fetchone()
-    return render_template("book.html", book=book)
+    book_id = db.execute("SELECT id_book FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()[0]
+    reviews = db.execute("SELECT u.username, r.review, r.rating FROM reviews as r INNER JOIN users as u ON u.id=r.user_id WHERE r.book_id=:book_id;",{"book_id":book_id}).fetchall()
+    return render_template("book.html", book=book, reviews=reviews)
 
 
 @app.route("/review", methods=["GET", "POST"])

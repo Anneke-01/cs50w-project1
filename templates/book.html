@@ -15,12 +15,29 @@
             </div>
             <hr>
             <h5 class="mb-2 myBlue d-inline-block">Reviews</h5>
-            {% for review in reviews %}
-                <p class="text-white">{{ review.username }}</p>
-                <p class="text-white"><small>review</small></p>
-                <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;"></pre>{{ review.review }} </div>
-                <br>
-            {% endfor %}
+            <div class="reviews">
+                {% for review in reviews%}
+                <div class="card text-dark bg-light mb-3">
+                    <div class="card-header text-dark bg-warning mb-3">
+                        <h5 class="card-title">{{ review.username }}</h5>
+                    </div>
+                    <div class="card-body">        
+                        <p class="card-text">{{ review.review }}</p>
+                        <p class="card-text"><h6>Rating: {{ review.rating}} </h6></p> 
+                    </div>
+                </div>     
+                {% endfor%}  
+            </div>
+            <!-- <div class="review">
+                {% for review in reviews %}
+                    <p class="text-black">{{ review.username }}</p>
+                    <p class="text-black"><small>review</small></p>
+                    <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;">{{ review.review }}</pre></div>
+                    <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;">{{ review.rating}} </pre></div>
+                    <br>
+                {% endfor %}
+            </div>
+            -->
             <hr>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
