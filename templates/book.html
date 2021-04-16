@@ -13,6 +13,11 @@
                 {{ book.isbn }}
                 <h5 class="mb-2 myBlue d-inline-block">Published in</h5> {{ book.year }}
             </div>
+            <div>
+                <h5 class="mb-2 myBlue d-inline-block">Rating:</h5>
+                <h6 class="mb-2 d-inline-block">{{ promedio}} </h6>
+                <span>({{ratings}} ratings)</span>
+            </div>
             <hr>
             <h5 class="mb-2 myBlue d-inline-block">Reviews</h5>
             <div class="reviews">
@@ -28,16 +33,6 @@
                 </div>     
                 {% endfor%}  
             </div>
-            <!-- <div class="review">
-                {% for review in reviews %}
-                    <p class="text-black">{{ review.username }}</p>
-                    <p class="text-black"><small>review</small></p>
-                    <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;">{{ review.review }}</pre></div>
-                    <div class="p-3 mb-2 bg-light text-dark"><pre class="text-success" wrap="hard" style="text-align: left;">{{ review.rating}} </pre></div>
-                    <br>
-                {% endfor %}
-            </div>
-            -->
             <hr>
         </div>
         <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">

@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.exceptions import default_exceptions
+from decimal import Decimal
+
 
 from helpers import login_required
 
@@ -54,11 +56,17 @@ def search():
 @app.route("/book/<isbn>", methods=["GET", "POST"])
 @login_required
 def book(isbn):
+    response = requests.get("https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn).json()
+
+    data = response['items'][0]['volumeInfo']
+    promedio = data["averageRating"]
+    ratings = data["ratingsCount"]
     book = db.execute("SELECT * FROM books WHERE isbn=:isbn",
                       {"isbn": isbn}).fetchone()
+    
     book_id = db.execute("SELECT id_book FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()[0]
     reviews = db.execute("SELECT u.username, r.review, r.rating FROM reviews as r INNER JOIN users as u ON u.id=r.user_id WHERE r.book_id=:book_id;",{"book_id":book_id}).fetchall()
-    return render_template("book.html", book=book, reviews=reviews)
+    return render_template("book.html", book=book, reviews=reviews, ratings=ratings, promedio=promedio)
 
 
 @app.route("/review", methods=["GET", "POST"])
@@ -76,7 +84,8 @@ def review():
     obtener_rev = db.execute("SELECT * FROM reviews WHERE user_id=:user_id AND book_id=:book_id",{
         "user_id":user_id, "book_id":book_id})
     if obtener_rev.rowcount > 0:
-        return render_template("error.html", message="No")
+        return render_template("error.html", message="You can't write a review twice!")
+    
     
     db.execute("INSERT INTO reviews (user_id,book_id,review, rating) VALUES (:user_id,:book_id,:review,:rating)",
                 {"user_id":user_id, "book_id":book_id, "review":review, "rating":rating})
@@ -135,24 +144,27 @@ def logout():
 
 @app.route("/api/<isbn>")
 def api(isbn):
-    book = db.execute("SELECT * FROM books WHERE isbn=:isbn",
-                      {"isbn": isbn}).fetchone()
+    book= db.execute("SELECT * FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()
+    book_id = db.execute("SELECT id_book FROM books WHERE isbn=:isbn", {"isbn": isbn}).fetchone()[0]
+    obtener_rev = db.execute("SELECT * FROM reviews WHERE book_id=:book_id",{"book_id":book_id})
+    promedio = db.execute("SELECT AVG(rating) FROM reviews WHERE book_id=:book_id",{"book_id":book_id}).fetchone()[0]
+    print(promedio)
+
     if book is None:
         return "invalid ISBN number"
     else:
-        response = requests.get(
-            "https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn).json()
-
-        data = response['items'][0]['volumeInfo']
-        promedio = data["averageRating"]
-        ratings = data["ratingsCount"]
+        countreviews = 0
+       
+        for book_id in obtener_rev:
+            countreviews = countreviews + 1
+       
         api = jsonify({
             "title": book.title,
             "author": book.author,
             "year": book.year,
             "isbn": book.isbn,
-            "review_count": ratings,
-            "average_score": promedio
+            "review_count": countreviews,
+            "average_score": float(promedio) 
         })
         return api
 
